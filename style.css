@@ -1,0 +1,30 @@
+body {
+    background-color: black; 
+    
+}
+
+#mainpicture {
+
+    width: 100%;
+    height:500px;
+
+}
+
+#container1 {
+    
+
+    
+
+}
+
+#text {
+    
+   color:lightseagreen;
+   font-family:'Halo3';
+}
+
+
+@font-face{
+    font-family: 'Halo3';
+    src: url("halo 3 font/halo3-webfont.woff")
+}
