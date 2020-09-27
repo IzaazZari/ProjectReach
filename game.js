@@ -1,18 +1,19 @@
 
 
 
-
 function startGame(){
     GameArea.start();
     //calls the start method of GameArea
     checkifkeypressed();
 
-    setInterval(updateGameArea,20) 
-    //setInterval calls updateGameArea every 20 ms
+    localStorage.setItem('alertedgameover','no')
+
+    
 
     
 
     Player1= new component(30,30,"blue",10,120);
+    Obstacle1= new component(10,200,'#3E1E0A',300,120);
     //creates a new instance of component with the specified parameters
 
 
@@ -25,7 +26,7 @@ function startGame(){
 
 
 function component(width, height, color, x, y){
-    console.log(this)
+    //console.log(this)
 
     this.width = width; 
     this.height = height;
@@ -62,6 +63,30 @@ function component(width, height, color, x, y){
       this.x = this.x + this.speedX
       this.y = this.y + this.speedY
 
+    this.crashWith = function(otherobj){
+        var myleft= this.x;
+        var myright=this.x+ (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+       //console.log('player1:',myleft,myright,mytop,mybottom)
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+       // console.log('obstacle1:',otherleft,otherright,othertop,otherbottom)
+
+        var crash = true;
+
+        if ( (mybottom < othertop) ||(mytop > otherbottom) ||(myright < otherleft) ||(myleft > otherright) ){
+
+            crash = false;
+        }
+        //console.log(crash)
+        return crash;
+
+    }
+
+
    }
 
     
@@ -78,7 +103,8 @@ var GameArea = {
         GameArea.canvas.width = 480;
         GameArea.canvas.height = 270;
         GameArea.a = GameArea.canvas.getContext("2d");
-        
+        GameArea.a.fillStyle = "#3D4366"
+        GameArea.a.fillRect(0,0,GameArea.canvas.width,GameArea.canvas.height);
         //a can be replaced by anything
         //a is just a filler variable for holding canvas.getcontext
 
@@ -101,16 +127,36 @@ var GameArea = {
      
        
 
+
+
+        this.interval = setInterval(updateGameArea,20)
+        //setInterval calls updateGameArea every 20 ms
+        //setInterval works even if declared in a variable
+        //var interval is used by GameArea.stop
+
+
     },
 
     //end of start
 
     clear: function(){
         GameArea.a.clearRect(0,0,GameArea.canvas.width,GameArea.canvas.height);
-        
+        GameArea.a.fillStyle = "#3D4366"
+        GameArea.a.fillRect(0,0,GameArea.canvas.width,GameArea.canvas.height);
         // first 2 parameters of clearRect specify the
         // the x and y coordinates of the upper left corner
         // of the rectangle to clear
+    },
+
+   
+
+    stop: function(){
+        clearInterval(this.interval);
+        var alertedgameover = localStorage.getItem('alertedgameover') || '';
+        if (alertedgameover != 'yes'){
+            alert('Game Over...');
+            localStorage.setItem('alertedgameover','yes');
+        }
     }
     
    
@@ -150,6 +196,7 @@ function checkkeyup(e){
 function updateGameArea() {
 GameArea.clear();
 
+
 Player1.speedX =0;
 Player1.speedY =0;
 if (keyspressed[37] == true){
@@ -169,9 +216,23 @@ Player1.newPos();
 Player1.update(); 
 //this calls component.update for player1 
 //inside the component function it replaces this.update with player1.update
+Obstacle1.update();
+
+crashed=Player1.crashWith(Obstacle1)
+if (crashed == true){
+    GameArea.stop()
+}
+//console.log(Player1crashed)
+
+
+    
+    
+
 
 
 }
+
+
 
 
 
