@@ -125,13 +125,22 @@ function checkifkeypressed(){
 window.addEventListener('keydown',checkkeydown)
 
 function checkkeydown(e){
-    checkifkeypressed.keydowncode = e.keyCode;
+
+    //this line checks if keyspressed exists and assigns it to keyspressed
+    //if keypressed does not exist it assigns it to an empty array
+
+    keyspressed = (keyspressed || []);
+    keyspressed[e.keyCode] = true;
+    
+
 }
 
 window.addEventListener('keyup',checkkeyup)
 
-function checkkeyup(){
-    checkifkeypressed.keydowncode = false;
+function checkkeyup(e){
+    keyspressed = (keyspressed || []);
+
+    keyspressed[e.keyCode] = false;
     
 }
 
@@ -143,16 +152,16 @@ GameArea.clear();
 
 Player1.speedX =0;
 Player1.speedY =0;
-if (checkifkeypressed.keydowncode && checkifkeypressed.keydowncode == 37){
+if (keyspressed[37] == true){
     Player1.speedX = -1
 }
-if (checkifkeypressed.keydowncode && checkifkeypressed.keydowncode == 39){
+if (keyspressed[39] == true){
     Player1.speedX = 1
 }
-if (checkifkeypressed.keydowncode && checkifkeypressed.keydowncode == 38){
+if (keyspressed[38] == true){
     Player1.speedY = -1
 }
-if (checkifkeypressed.keydowncode && checkifkeypressed.keydowncode == 40){
+if (keyspressed[40] == true){
     Player1.speedY = 1
 }
 
@@ -168,6 +177,7 @@ Player1.update();
 
 
 
+keyspressed = []
 
 
 startGame();
